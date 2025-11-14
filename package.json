@@ -1,0 +1,38 @@
+{
+  "name": "dopamint-indexer-insight",
+  "version": "1.0.0",
+  "description": "Custom blockchain indexer for Dopamint NFT platform on Base chain",
+  "main": "index.js",
+  "scripts": {
+    "setup": "./scripts/setup.sh",
+    "start:backfill": "docker-compose --profile backfill up -d",
+    "start:committer": "docker-compose --profile committer up -d",
+    "stop": "docker-compose down",
+    "logs": "docker-compose logs -f",
+    "db:init": "./scripts/init-databases.sh",
+    "clean": "docker-compose down -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/dopamint-indexer-insight.git"
+  },
+  "keywords": [
+    "blockchain",
+    "indexer",
+    "nft",
+    "base",
+    "ethereum",
+    "dopamint",
+    "thirdweb",
+    "clickhouse"
+  ],
+  "author": "Dopamint Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "ethers": "^6.9.0"
+  }
+}

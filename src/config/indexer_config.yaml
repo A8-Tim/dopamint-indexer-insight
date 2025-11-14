@@ -1,0 +1,130 @@
+# Dopamint Indexer Configuration
+# Based on thirdweb/insight with custom Dopamint filtering
+
+# RPC Configuration for Base Chain
+rpc:
+  url: ${RPC_URL:-https://base.llamarpc.com}
+  chainId: 8453  # Base Mainnet
+
+  # Block fetching configuration
+  blocks:
+    blocksPerRequest: 100  # Reduced for filtered indexing
+    batchDelay: 50
+
+  # Log fetching configuration
+  logs:
+    blocksPerRequest: 100  # Reduced since we're filtering by address
+    batchDelay: 50
+    useAddressFilter: true  # Enable address-based filtering
+
+  # Receipt fetching
+  blockReceipts:
+    enabled: true
+    blocksPerRequest: 100
+    batchDelay: 50
+
+  # Traces (optional - can be disabled to save resources)
+  traces:
+    enabled: false
+    blocksPerRequest: 50
+    batchDelay: 100
+
+# Storage Configuration
+storage:
+  # ClickHouse - Main data warehouse
+  main:
+    clickhouse:
+      host: ${CLICKHOUSE_HOST:-localhost}
+      port: ${CLICKHOUSE_PORT:-9000}
+      username: ${CLICKHOUSE_USER:-default}
+      password: ${CLICKHOUSE_PASSWORD}
+      database: ${CLICKHOUSE_DB:-dopamint_indexer}
+      disableTLS: ${CLICKHOUSE_DISABLE_TLS:-false}
+
+  # S3 - Intermediate storage
+  s3:
+    bucket: ${S3_BUCKET:-dopamint-indexer-data}
+    region: ${S3_REGION:-us-east-1}
+    endpoint: ${S3_ENDPOINT}
+    accessKeyId: ${AWS_ACCESS_KEY_ID}
+    secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+
+  # Kafka - Message broker
+  kafka:
+    brokers: ${KAFKA_BROKERS:-localhost:9092}
+    topic: ${KAFKA_TOPIC:-dopamint-blocks}
+    groupId: ${KAFKA_GROUP_ID:-dopamint-indexer}
+
+  # Redis - Metadata storage
+  redis:
+    host: ${REDIS_HOST:-localhost}
+    port: ${REDIS_PORT:-6379}
+    password: ${REDIS_PASSWORD}
+    db: ${REDIS_DB:-0}
+
+# MongoDB Configuration (for Dopamint contract addresses)
+mongodb:
+  uri: ${MONGODB_URI:-mongodb://localhost:27017}
+  database: ${MONGODB_DATABASE:-dopamint}
+  collection: ${MONGODB_COLLECTION:-nft_contracts}
+  connectTimeout: 10s
+  syncEnabled: true
+  syncIntervalSeconds: 300  # Sync every 5 minutes
+
+# Dopamint Contract Configuration
+dopamint:
+  contracts:
+    factory:
+      address: ${DOPAMINT_FACTORY_ADDRESS}
+      startBlock: ${DOPAMINT_FACTORY_START_BLOCK:-0}
+
+    payment:
+      address: ${DOPAMINT_PAYMENT_ADDRESS}
+      startBlock: ${DOPAMINT_PAYMENT_START_BLOCK:-0}
+
+  # Filtering configuration
+  filtering:
+    enabled: true
+    mode: whitelist  # Only index specified contracts
+    autoDiscovery: true  # Auto-discover NFT contracts from Factory events
+
+  # Backfill configuration
+  backfill:
+    enabled: true
+    fromBlock: ${BACKFILL_FROM_BLOCK:-0}
+    toBlock: ${BACKFILL_TO_BLOCK:-latest}
+    batchSize: 1000
+
+# Committer Configuration
+committer:
+  isLive: ${COMMITTER_IS_LIVE:-true}
+  pollInterval: 2s
+  reorgDepth: 64  # Number of blocks to check for reorgs
+
+# Backfill Configuration
+backfill:
+  startBlock: ${BACKFILL_START_BLOCK:-0}
+  endBlock: ${BACKFILL_END_BLOCK}
+  batchSize: 1000
+  concurrency: 4
+  maxMemoryMB: 4096
+
+# Monitoring & Observability
+monitoring:
+  metrics:
+    enabled: true
+    port: 9090
+
+  logging:
+    level: ${LOG_LEVEL:-info}  # debug, info, warn, error
+    format: json
+
+  healthcheck:
+    enabled: true
+    port: 8080
+
+# Performance Tuning
+performance:
+  maxGoroutines: 100
+  bufferSize: 10000
+  flushInterval: 5s

@@ -1,0 +1,49 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "contracts": {
+    "factory": {
+      "address": "0x_FACTORY_ADDRESS_HERE",
+      "name": "DopamintNFTFactory",
+      "description": "Factory contract that creates NFT collections",
+      "events": [
+        "NFTContractCreated",
+        "NFTEvent",
+        "AIGenerationFeeDefaultUpdated",
+        "AIGenerationFeeUpdated",
+        "CreationFeeUpdated",
+        "InitNFTPriceUpdated",
+        "OperatorUpdated",
+        "OwnershipTransferred",
+        "ProtocolWalletUpdated"
+      ]
+    },
+    "payment": {
+      "address": "0x_PAYMENT_ADDRESS_HERE",
+      "name": "DopamintPayment",
+      "description": "Payment contract for AI generation fees",
+      "events": [
+        "PaymentReceived",
+        "Withdrawal",
+        "OperatorUpdated"
+      ]
+    },
+    "nftContracts": []
+  },
+  "eventFilters": {
+    "enabled": true,
+    "filterMode": "whitelist",
+    "description": "Only index events from Dopamint contracts"
+  },
+  "syncSettings": {
+    "mongodbSync": {
+      "enabled": true,
+      "intervalSeconds": 300,
+      "description": "Sync NFT contract addresses from MongoDB every 5 minutes"
+    },
+    "autoDiscovery": {
+      "enabled": true,
+      "description": "Automatically discover new NFT contracts from NFTContractCreated events"
+    }
+  }
+}
